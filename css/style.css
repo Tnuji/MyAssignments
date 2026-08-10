@@ -1,0 +1,17 @@
+body {
+    background-color: lightblue;
+  }
+  .app {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  .sidebar {
+    width: 240px;
+    background-color: #1e1b4b;
+  }
+  
+  .main-content {
+    flex: 1;
+    background-color: #f3f4f6;
+  }
