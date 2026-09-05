@@ -165,44 +165,11 @@
             <h2 class="card-title">Today's Assignments</h2>
             <a href="#" class="view-all">View All</a>
           </div>
+          <div id="todaysList"></div>
   
-          <div class="assignment-row purple">
-            <div class="assignment-icon">💻</div>
-            <div class="assignment-info">
-              <p class="assignment-name">LeetCode Practice</p>
-              <p class="assignment-class">CS 301</p>
-            </div>
-            <div class="assignment-meta">
-              <p class="assignment-time">11:59 PM</p>
-              <span class="priority priority-high">High</span>
-            </div>
-          </div>
-  
-          <div class="assignment-row orange">
-            <div class="assignment-icon">📖</div>
-            <div class="assignment-info">
-              <p class="assignment-name">Research Paper Outline</p>
-              <p class="assignment-class">ENG 302</p>
-            </div>
-            <div class="assignment-meta">
-              <p class="assignment-time">5:00 PM</p>
-              <span class="priority priority-medium">Medium</span>
-            </div>
-          </div>
-  
-          <div class="assignment-row blue">
-            <div class="assignment-icon">fi</div>
-            <div class="assignment-info">
-              <p class="assignment-name">Problem Set 6</p>
-              <p class="assignment-class">MATH 201</p>
-            </div>
-            <div class="assignment-meta">
-              <p class="assignment-time">11:59 PM</p>
-              <span class="priority priority-high">High</span>
-            </div>
-          </div>
-  
-          <button class="add-assignment-btn">+ Add Assignment</button>
+          <button id="add-assignment-btn">+ Add Assignment</button>
+
+          
   
         </div>
         <div class="calendar-card">
@@ -356,10 +323,50 @@
         </div>
       
       </section>
+      <section class="add-form-card">
 
+        <h2 class="card-title">Add New Assignment</h2>
+      
+        <form class="assignment-form">
+      
+          <label for="title">Title</label>
+          <input type="text" id="title" placeholder="e.g. Project 2 - Binary Search Tree" />
+      
+          <label for="class-select">Class</label>
+          <select id="class-select">
+            <option>CS 301</option>
+            <option>MATH 201</option>
+            <option>ENG 302</option>
+            <option>HIST 201</option>
+          </select>
+      
+          <div class="form-row">
+            <div class="form-field">
+              <label for="due-date">Due Date</label>
+              <input type="date" id="due-date" />
+            </div>
+            <div class="form-field">
+              <label for="priority-select">Priority</label>
+              <select id="priority-select">
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+              </select>
+            </div>
+          </div>
+      
+          <label for="notes">Notes</label>
+          <textarea id="notes" rows="3" placeholder="Anything you don't want to forget"></textarea>
+      
+          <button type="submit" class="save-btn">Save Assignment</button>
+      
+        </form>
+      
+      </section>
     </main>
   </div>
 
 </body>
+<script src="js/app.js"></script>
 
 </html>
