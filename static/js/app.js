@@ -10,11 +10,7 @@ const assignments = [
 ];
 
 function getTodayISO() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+  return getISOFromDate(new Date());
 }
 
 function getDayNumber(isoDate) {
@@ -26,7 +22,30 @@ function getMonthAbbr(isoDate) {
   const monthIndex = Number(isoDate.split("-")[1]) - 1;
   return months[monthIndex];
 }
-console.log(todaysAssignments);
+function getISOFromDate(dateObj) {
+  const year = dateObj.getFullYear();
+  const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+  const day = String(dateObj.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function getTodaysAssignments() {
+  const today = getTodayISO();
+  return assignments.filter((a) => a.dueDate === today);
+}
+
+function getUpcomingAssignments() {
+  const today = getTodayISO();
+  return assignments
+    .filter((a) => a.dueDate > today && a.status !== "done")
+    .sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+}
+
+function getOverdueAssignments() {
+  const today = getTodayISO();
+  return assignments.filter((a) => a.dueDate < today && a.status !== "done");
+}
+//console.log(assignments);
 
 const todaysListEl = document.getElementById("todaysList");
 
@@ -35,7 +54,7 @@ const todaysListEl = document.getElementById("todaysList");
 function renderTodaysAssignments() {
   todaysListEl.innerHTML = "";
 
-  todaysAssignments.forEach((assignment) => {
+  getTodaysAssignments().forEach((assignment) => {
     const row = document.createElement("div");
     row.className = "assignment-row " + assignment.color;
 
@@ -79,7 +98,6 @@ function renderTodaysAssignments() {
   });
 }
 
-renderTodaysAssignments();
 
 const form = document.querySelector(".assignment-form");
 
@@ -94,18 +112,20 @@ form.addEventListener("submit", (e) => {
   const newAssignment = {
     title: title,
     className: className,
-    time: dueDate,
+    dueDate: dueDate,
+    time: "11:59 PM",
     priority: priority,
     color: "purple",
     icon: "📌",
+    tag: "Assignment",
+    status: "pending",
   };
 
-  todaysAssignments.push(newAssignment);
+  assignments.push(newAssignment);
 
-  renderTodaysAssignments();
 
   form.reset();
-  renderStats();
+  renderAll();
 });
 
 const upcomingListEl = document.getElementById("upcomingList");
@@ -113,7 +133,7 @@ const upcomingListEl = document.getElementById("upcomingList");
 function renderUpcoming() {
   upcomingListEl.innerHTML = "";
 
-  upcomingAssignments.forEach((upcomingAssignment) => {
+  getUpcomingAssignments().forEach((upcomingAssignment) => {
     const row = document.createElement("div");
     row.className = "upcoming-item";
 
@@ -126,10 +146,10 @@ function renderUpcoming() {
     date.className = "upcoming-date";
     const day = document.createElement("span");
     day.className = "upcoming-day";
-    day.textContent = upcomingAssignment.day;
+    day.textContent = getDayNumber(upcomingAssignment.dueDate);
     const month = document.createElement("span");
     month.className = "upcoming-month";
-    month.textContent = upcomingAssignment.month;
+    month.textContent = getMonthAbbr(upcomingAssignment.dueDate);
     
     date.append(day);
     date.append(month);
@@ -176,17 +196,60 @@ function renderUpcoming() {
 
     upcomingListEl.appendChild(row);
   });
+}
+
+
+function renderStats() {
+  const today = getTodayISO();
+
+  const dueToday = assignments.filter((a) => a.dueDate === today && a.status !== "done");
+  const completed = assignments.filter((a) => a.status === "done");
+  const overdue = getOverdueAssignments();
+
+  const weekFromNow = new Date();
+  weekFromNow.setDate(weekFromNow.getDate() + 7);
+  const weekEnd = getISOFromDate(weekFromNow);
+
+  const thisWeek = assignments.filter(
+    (a) => a.dueDate >= today && a.dueDate <= weekEnd && a.status !== "done"
+  );
+
+  document.getElementById("statDueToday").textContent = dueToday.length;
+  document.getElementById("statThisWeek").textContent = thisWeek.length;
+  document.getElementById("statOverdue").textContent = overdue.length;
+  document.getElementById("statCompleted").textContent = completed.length;
+}
+
+function renderUpNext() {
+  const upcoming = getUpcomingAssignments();
+  const overdue = getOverdueAssignments();
+  const todays = getTodaysAssignments().filter((a) => a.status !== "done");
+
+  const next = overdue[0] || todays[0] || upcoming[0];
+
+  if (!next) {
+    document.getElementById("upNextTitle").textContent = "Nothing due — you're all caught up";
+    document.getElementById("upNextBadge").textContent = "";
+    document.getElementById("upNextDue").textContent = "";
+    return;
+  }
+
+  document.getElementById("upNextTitle").textContent = next.title;
+  document.getElementById("upNextBadge").textContent = next.className;
+  document.getElementById("upNextDue").textContent =
+    `📅 ${getMonthAbbr(next.dueDate)} ${getDayNumber(next.dueDate)} · 🕐 ${next.time}`;
+}
+function renderAll() {
+  renderTodaysAssignments();
+  renderUpcoming();
+  renderUpNext();
   renderStats();
 }
 
-renderUpcoming();
+const addButton = document.getElementById("add-assignment-btn");
 
-function renderStats() {
-  const completed = todaysAssignments.filter((a) => a.status === "done");
-  const pending = todaysAssignments.filter((a) => a.status !== "done");
+addButton.addEventListener("click", () => {
+  document.querySelector(".add-form-card").scrollIntoView({ behavior: "smooth" });
+});
 
-  document.getElementById("statDueToday").textContent = pending.length;
-  document.getElementById("statCompleted").textContent = completed.length;
-  document.getElementById("statThisWeek").textContent = upcomingAssignments.length;
-  document.getElementById("statOverdue").textContent = 0;
-}
+renderAll();

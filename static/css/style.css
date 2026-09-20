@@ -368,6 +368,7 @@ body {
 .assignment-row.purple { border-left-color: #8b5cf6; }
 .assignment-row.orange { border-left-color: #f97316; }
 .assignment-row.blue   { border-left-color: #3b82f6; }
+.assignment-row.green { border-left-color: #22c55e; }
 
 .assignment-icon {
   width: 40px;
@@ -421,7 +422,10 @@ body {
   background-color: #ffedd5;
   color: #c2410c;
 }
-
+.priority-low {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
 #add-assignment-btn {
   width: 100%;
   background: none;
