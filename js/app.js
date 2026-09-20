@@ -1,28 +1,7 @@
 const todaysAssignments = [
-  {
-    title: "LeetCode Practice",
-    className: "CS 301",
-    time: "11:59 PM",
-    priority: "high",
-    color: "purple",
-    icon: "💻",
-  },
-  {
-    title: "Research Paper Outline",
-    className: "ENG 302",
-    time: "5:00 PM",
-    priority: "medium",
-    color: "orange",
-    icon: "📖",
-  },
-  {
-    title: "Problem Set 6",
-    className: "MATH 201",
-    time: "11:59 PM",
-    priority: "high",
-    color: "blue",
-    icon: "fi",
-  },
+  { title: "LeetCode Practice", className: "CS 301", time: "11:59 PM", priority: "high", color: "purple", icon: "💻", status: "pending" },
+  { title: "Research Paper Outline", className: "ENG 302", time: "5:00 PM", priority: "medium", color: "orange", icon: "📖", status: "done" },
+  { title: "Problem Set 6", className: "MATH 201", time: "11:59 PM", priority: "high", color: "blue", icon: "fi", status: "pending" },
 ];
 
 const upcomingAssignments = [
@@ -35,6 +14,8 @@ const upcomingAssignments = [
 console.log(todaysAssignments);
 
 const todaysListEl = document.getElementById("todaysList");
+
+
 
 function renderTodaysAssignments() {
   todaysListEl.innerHTML = "";
@@ -81,8 +62,6 @@ function renderTodaysAssignments() {
 
     todaysListEl.appendChild(row);
   });
-
-  document.getElementById("statDueToday").textContent = todaysAssignments.length;
 }
 
 renderTodaysAssignments();
@@ -111,6 +90,7 @@ form.addEventListener("submit", (e) => {
   renderTodaysAssignments();
 
   form.reset();
+  renderStats();
 });
 
 const upcomingListEl = document.getElementById("upcomingList");
@@ -130,8 +110,10 @@ function renderUpcoming() {
     const date = document.createElement("div");
     date.className = "upcoming-date";
     const day = document.createElement("span");
-    day.textContent = upcomingAssignment.day + " ";
+    day.className = "upcoming-day";
+    day.textContent = upcomingAssignment.day;
     const month = document.createElement("span");
+    month.className = "upcoming-month";
     month.textContent = upcomingAssignment.month;
     
     date.append(day);
@@ -152,8 +134,10 @@ function renderUpcoming() {
     const classInfo = document.createElement("div");
     classInfo.className = "upcoming-info";
     const assignmentName = document.createElement("p");
+    assignmentName.className = "upcoming-name";
     assignmentName.textContent = upcomingAssignment.title;
     const nameOfClass = document.createElement("p");
+    nameOfClass.className = "upcoming-class";
     nameOfClass.textContent = upcomingAssignment.className;
 
     classInfo.appendChild(assignmentName);
@@ -163,7 +147,8 @@ function renderUpcoming() {
     // 5. Create the tag:
     //    - a span with className "tag" (item.tag)
     const tag = document.createElement("span");
-    tag.className = upcomingAssignment.tag;
+    tag.className = "tag";
+    tag.textContent = upcomingAssignment.tag;
 
 
     // 6. appendChild everything into the outer div, in this order:
@@ -176,6 +161,17 @@ function renderUpcoming() {
 
     upcomingListEl.appendChild(row);
   });
+  renderStats();
 }
 
 renderUpcoming();
+
+function renderStats() {
+  const completed = todaysAssignments.filter((a) => a.status === "done");
+  const pending = todaysAssignments.filter((a) => a.status !== "done");
+
+  document.getElementById("statDueToday").textContent = pending.length;
+  document.getElementById("statCompleted").textContent = completed.length;
+  document.getElementById("statThisWeek").textContent = upcomingAssignments.length;
+  document.getElementById("statOverdue").textContent = 0;
+}
