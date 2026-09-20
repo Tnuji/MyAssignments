@@ -1,16 +1,31 @@
-const todaysAssignments = [
-  { title: "LeetCode Practice", className: "CS 301", time: "11:59 PM", priority: "high", color: "purple", icon: "💻", status: "pending" },
-  { title: "Research Paper Outline", className: "ENG 302", time: "5:00 PM", priority: "medium", color: "orange", icon: "📖", status: "done" },
-  { title: "Problem Set 6", className: "MATH 201", time: "11:59 PM", priority: "high", color: "blue", icon: "fi", status: "pending" },
+const assignments = [
+  { title: "LeetCode Practice",     className: "CS 301",   dueDate: "2026-09-20", time: "11:59 PM", priority: "high",   color: "purple", icon: "💻", tag: "Practice",  status: "pending" },
+  { title: "Research Paper Outline", className: "ENG 302", dueDate: "2026-09-20", time: "5:00 PM",  priority: "medium", color: "orange", icon: "📖", tag: "Paper",     status: "done"    },
+  { title: "Problem Set 6",          className: "MATH 201", dueDate: "2026-09-20", time: "11:59 PM", priority: "high",   color: "blue",   icon: "fi", tag: "Homework",  status: "pending" },
+  { title: "Calculus Quiz",          className: "MATH 201", dueDate: "2026-09-24", time: "9:00 AM",  priority: "high",   color: "purple", icon: "📐", tag: "Quiz",      status: "pending" },
+  { title: "Database Project",       className: "CS 301",   dueDate: "2026-09-26", time: "11:59 PM", priority: "high",   color: "blue",   icon: "💾", tag: "Project",   status: "pending" },
+  { title: "Reading Response",       className: "ENG 302",  dueDate: "2026-09-28", time: "11:59 PM", priority: "low",    color: "orange", icon: "📚", tag: "Paper",     status: "pending" },
+  { title: "Midterm Study Guide",    className: "HIST 201", dueDate: "2026-10-02", time: "11:59 PM", priority: "medium", color: "green",  icon: "🗂️", tag: "Study",     status: "pending" },
+  { title: "Essay Draft",            className: "ENG 302",  dueDate: "2026-09-14", time: "11:59 PM", priority: "high",   color: "orange", icon: "✍️", tag: "Paper",     status: "pending" },
 ];
 
-const upcomingAssignments = [
-  { day: "10", month: "AUG", title: "Calculus Quiz", className: "MATH 201", tag: "Quiz", color: "purple" },
-  { day: "12", month: "AUG", title: "Database Project", className: "CS 301", tag: "Project", color: "blue" },
-  { day: "14", month: "AUG", title: "Reading Response", className: "ENG 302", tag: "Paper", color: "orange" },
-  { day: "15", month: "AUG", title: "Chapter 9 Problems", className: "MATH 201", tag: "Homework", color: "green" },
-  { day: "18", month: "AUG", title: "Midterm Study Guide", className: "HIST 201", tag: "Study", color: "purple" },
-];
+function getTodayISO() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function getDayNumber(isoDate) {
+  return isoDate.split("-")[2];
+}
+
+function getMonthAbbr(isoDate) {
+  const months = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+  const monthIndex = Number(isoDate.split("-")[1]) - 1;
+  return months[monthIndex];
+}
 console.log(todaysAssignments);
 
 const todaysListEl = document.getElementById("todaysList");
