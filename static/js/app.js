@@ -1,13 +1,12 @@
-const assignments = [
-  { title: "LeetCode Practice",     className: "CS 301",   dueDate: "2026-09-20", time: "11:59 PM", priority: "high",   color: "purple", icon: "💻", tag: "Practice",  status: "pending" },
-  { title: "Research Paper Outline", className: "ENG 302", dueDate: "2026-09-20", time: "5:00 PM",  priority: "medium", color: "orange", icon: "📖", tag: "Paper",     status: "done"    },
-  { title: "Problem Set 6",          className: "MATH 201", dueDate: "2026-09-20", time: "11:59 PM", priority: "high",   color: "blue",   icon: "fi", tag: "Homework",  status: "pending" },
-  { title: "Calculus Quiz",          className: "MATH 201", dueDate: "2026-09-24", time: "9:00 AM",  priority: "high",   color: "purple", icon: "📐", tag: "Quiz",      status: "pending" },
-  { title: "Database Project",       className: "CS 301",   dueDate: "2026-09-26", time: "11:59 PM", priority: "high",   color: "blue",   icon: "💾", tag: "Project",   status: "pending" },
-  { title: "Reading Response",       className: "ENG 302",  dueDate: "2026-09-28", time: "11:59 PM", priority: "low",    color: "orange", icon: "📚", tag: "Paper",     status: "pending" },
-  { title: "Midterm Study Guide",    className: "HIST 201", dueDate: "2026-10-02", time: "11:59 PM", priority: "medium", color: "green",  icon: "🗂️", tag: "Study",     status: "pending" },
-  { title: "Essay Draft",            className: "ENG 302",  dueDate: "2026-09-14", time: "11:59 PM", priority: "high",   color: "orange", icon: "✍️", tag: "Paper",     status: "pending" },
-];
+let assignments = [];
+
+async function loadAssignments() {
+  const response = await fetch("/api/assignments");
+  assignments = await response.json();
+  renderAll();
+}
+
+loadAssignments();
 
 function getTodayISO() {
   return getISOFromDate(new Date());
@@ -101,31 +100,24 @@ function renderTodaysAssignments() {
 
 const form = document.querySelector(".assignment-form");
 
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const title = document.getElementById("title").value;
-  const className = document.getElementById("class-select").value;
-  const dueDate = document.getElementById("due-date").value;
-  const priority = document.getElementById("priority-select").value.toLowerCase();
-
   const newAssignment = {
-    title: title,
-    className: className,
-    dueDate: dueDate,
-    time: "11:59 PM",
-    priority: priority,
-    color: "purple",
-    icon: "📌",
-    tag: "Assignment",
-    status: "pending",
+    title: document.getElementById("title").value,
+    className: document.getElementById("class-select").value,
+    dueDate: document.getElementById("due-date").value,
+    priority: document.getElementById("priority-select").value.toLowerCase(),
   };
 
-  assignments.push(newAssignment);
-
+  await fetch("/api/assignments", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(newAssignment),
+  });
 
   form.reset();
-  renderAll();
+  await loadAssignments();
 });
 
 const upcomingListEl = document.getElementById("upcomingList");
@@ -251,5 +243,3 @@ const addButton = document.getElementById("add-assignment-btn");
 addButton.addEventListener("click", () => {
   document.querySelector(".add-form-card").scrollIntoView({ behavior: "smooth" });
 });
-
-renderAll();
