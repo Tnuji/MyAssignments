@@ -58,6 +58,32 @@ def create_assignment():
     connection.close()
 
     return jsonify(row_to_dict(new_row)), 201
+@app.route("/api/assignments/<int:assignment_id>", methods=["DELETE"])
+def delete_assignment(assignment_id):
+    connection = get_connection()
+    connection.execute("DELETE FROM assignments WHERE id = ?", (assignment_id,))
+    connection.commit()
+    connection.close()
+    return "", 204
+
+
+@app.route("/api/assignments/<int:assignment_id>", methods=["PATCH"])
+def update_assignment(assignment_id):
+    data = request.get_json()
+
+    connection = get_connection()
+    connection.execute(
+        "UPDATE assignments SET status = ? WHERE id = ?",
+        (data.get("status"), assignment_id),
+    )
+    connection.commit()
+
+    row = connection.execute(
+        "SELECT * FROM assignments WHERE id = ?", (assignment_id,)
+    ).fetchone()
+    connection.close()
+
+    return jsonify(row_to_dict(row))
 
 if __name__ == "__main__":
     init_db()

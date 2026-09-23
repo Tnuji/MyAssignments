@@ -89,9 +89,32 @@ function renderTodaysAssignments() {
     meta.appendChild(time);
     meta.appendChild(priority);
 
+    const checkBtn = document.createElement("button");
+    checkBtn.className = "check-btn";
+    checkBtn.textContent = assignment.status === "done" ? "✓" : "○";
+    checkBtn.addEventListener("click", async () => {
+      const newStatus = assignment.status === "done" ? "pending" : "done";
+      await fetch(`/api/assignments/${assignment.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      await loadAssignments();
+    });
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "delete-btn";
+    deleteBtn.textContent = "✕";
+    deleteBtn.addEventListener("click", async () => {
+      await fetch(`/api/assignments/${assignment.id}`, { method: "DELETE" });
+      await loadAssignments();
+    });
+
+    row.appendChild(checkBtn);
     row.appendChild(icon);
     row.appendChild(info);
     row.appendChild(meta);
+    row.appendChild(deleteBtn);
 
     todaysListEl.appendChild(row);
   });
